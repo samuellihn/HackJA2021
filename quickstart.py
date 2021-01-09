@@ -9,14 +9,18 @@ from datetime import datetime
 SCOPES = ['https://www.googleapis.com/auth/classroom.coursework.me', 'https://www.googleapis.com/auth/classroom.courses.readonly']
 
 class time:
-    def __init__(self, year, month, day, hour, minute):
+    def __init__(self, year, month, day, hour, minute,):
         self.year = year
         self.month = month
         self.day = day
         self.hour = hour
         self.minute = minute
-
-
+class assignment:
+    def __init__(self, t, ClassName, ClassID, AssignmentName):
+        self.t = t
+        self.ClassName = ClassName
+        self.ClassID = ClassID
+        self.AssignmentName = AssignmentName
 
 
 
@@ -55,22 +59,33 @@ def main():
     # Call the Classroom API
     results = service.courses().list(pageSize=10).execute()
     courses = results.get('courses', [])
-    metadata =  course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
+    classes = []
+    for course in courses:
+        cid = course['id']
+        print((cid))  
+        cname = course['name']
+        metadata =  course_work_results = service.courses().courseWork().list(courseId = str(5448623005)).execute()
     
 
+        #print(metadata.get("courseWork"))
+        assignments = []
+        for work in (metadata.get("courseWork")):
 
+            aname = work.get("title")
 
+            year = work.get("dueDate").get("year")
+            month = work.get("dueDate").get("month")
+            day = work.get("dueDate").get("day")
 
-    year = (metadata.get("courseWork"))[0].get("dueDate").get("year")
-    month = (metadata.get("courseWork"))[0].get("dueDate").get("month")
-    day = (metadata.get("courseWork"))[0].get("dueDate").get("day")
+            hour = (work.get("dueTime").get("hours"))
+            minute = work.get("dueTime").get("minutes")
 
-    hour = (metadata.get("courseWork"))[0].get("dueTime").get("hours")
-    minute = (metadata.get("courseWork"))[0].get("dueTime").get("minutes")
+            duedate = time( year, month, day, hour, minute)
+            assignments.append(assignment(duedate, cname, cid, aname))
 
-    duedate = time( year, month, day, hour, minute)
-
-    print(duedate.__dict__)
+        classes.append(assignments)
+                    
+        #print(classes.__dict__)
     
 
 
@@ -81,7 +96,7 @@ def main():
     else:
         print('Courses:')
         for course in courses:
-            log.write(str(metadata) + "\n")
+            log.write(str(metadata.get("courseWork")) + "\n")
             
 
             # metadata =  course_work_results = service.courses().courseWork().list(courseId = course[u'id']).execute()

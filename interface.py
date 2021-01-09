@@ -145,7 +145,7 @@ submitButton.clicked.connect(save_form)
 layout.addWidget(submitButton)
 
 timer = QTimer()
-timer.setInterval(60 * 1000)
+timer.setInterval(5 * 1000)
 timer.setTimerType(Qt.CoarseTimer)
 timer.timeout.connect(open_class_wrapper)
 

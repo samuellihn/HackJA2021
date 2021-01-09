@@ -16,7 +16,9 @@ class FileRow:
 class DaysOfWeekSelector:
     def __init__(self):
         self.hlayout = QHBoxLayout()
-        labels = ["S", "M", "T", "W", "T", "F", "S"]
+        labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
         self.checkboxes = []
         for x in labels:
-            self.checkboxes.append(QCheckBox(text=x))
+            new = QCheckBox(text=x)
+            self.checkboxes.append(new)
+            self.hlayout.addWidget(new)

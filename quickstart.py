@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/classroom.coursework.me']          
+SCOPES = ['https://www.googleapis.com/auth/classroom.coursework.me', 'https://www.googleapis.com/auth/classroom.courses.readonly']
 
 def main():
     """Shows basic usage of the Classroom API.
@@ -36,21 +36,19 @@ def main():
     # Call the Classroom API
     results = service.courses().list(pageSize=10).execute()
     courses = results.get('courses', [])
-    #metadata =  course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
+    metadata =  course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
 
-   
-    log =open("log.txt", "w")   
+    log = open("log.txt", "w")
     if not courses:
         print('No courses found.')
     else:
         print('Courses:')
         for course in courses:
             log.write(str(course) + "\n")
-            #log.write(str(course['id'] + "\t" +  course['name'] + "\n"))
-            print(str(course['id'] + "\t" +  course['name'] + "\n"))
-           
-            #metadata =  course_work_results = service.courses().courseWork().list(courseId = course[u'id']).execute()
-            
+            # log.write(str(course['id'] + "\t" +  course['name'] + "\n"))
+            print(str(course['id'] + "\t" + course['name'] + "\n"))
+
+            # metadata =  course_work_results = service.courses().courseWork().list(courseId = course[u'id']).execute()
 
 if __name__ == '__main__':
     main()

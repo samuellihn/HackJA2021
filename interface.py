@@ -9,6 +9,20 @@ import os
 from custom_qt import *
 from counter import Counter
 
+
+def day_to_index(input):
+    translate = {
+        "Sun": 0,
+        "Mon": 1,
+        "Tue": 2,
+        "Wed": 3,
+        "Thu": 4,
+        "Fri": 5,
+        "Sat": 6
+    }
+    return translate[input]
+
+
 @Slot()
 def edit_number_rows(value):
     if value > int(rows):
@@ -32,6 +46,13 @@ def save_form():
     os.remove("classes.csv")
     with open("classes.csv", "w+") as csvfile:
         writer = csv.writer(csvfile)
+
+        days = []
+        for checkbox in DOWSelector.checkboxes:
+            if checkbox.isChecked():
+                days.append(checkbox.text())
+        writer.writerow(days)
+
         to_remove = []
         for x in file_list:
             write_time = x.timebox.time().toString("HH:mm")
@@ -69,6 +90,7 @@ layout.addWidget(numberClasses)
 
 layout.addLayout(entry_layout)
 layout.addStretch(0)
+DOWSelector = DaysOfWeekSelector()
 
 
 rows = Counter()
@@ -76,6 +98,9 @@ numberClasses.valueChanged[int].connect(edit_number_rows)
 file_list = []
 with open("classes.csv", "r") as csvfile:
     reader = csv.reader(csvfile)
+    for day in next(reader):
+        DOWSelector.checkboxes[day_to_index(day)].setChecked(True)
+
     for row in reader:
         try:
             file_list.append(FileRow(row[0], row[1]))
@@ -84,9 +109,11 @@ with open("classes.csv", "r") as csvfile:
         entry_layout.addLayout(file_list[int(rows)].hlayout)
         rows.increment()
 
+
+
 numberClasses.setValue(rows)
 
-
+layout.addLayout(DOWSelector.hlayout)
 
 submitButton = QPushButton(text="Save")
 submitButton.clicked.connect(save_form)

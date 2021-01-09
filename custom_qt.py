@@ -2,7 +2,7 @@ from PySide2.QtCore import QTime, QSize, Slot
 from PySide2.QtWidgets import QTimeEdit, QLineEdit, QHBoxLayout, QCheckBox, QPushButton
 from PySide2.QtWidgets import QSizePolicy
 import webbrowser
-
+import os
 
 
 class FileRow:
@@ -11,7 +11,10 @@ class FileRow:
     def go_to_link(self):
         text = self.linkbox.text()
         if not text == "https://":
-            webbrowser.get("\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" %s").open(text)
+            if text.startswith("https://") or text.startswith("http://"):
+                webbrowser.get("\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" %s").open(text)
+            else:
+                os.system(f"\"{text}\"")
 
     def __init__(self, time, link):
         self.hlayout = QHBoxLayout()

@@ -23,5 +23,7 @@ def open_class():
                 print('Time correct')
                 if is_correct_day:
                     print("Opening...")
-                    webbrowser.get("\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" %s").open(row[1])
-
+                    if row[1].startswith("https://") or row[1].startswith("http://"):
+                        webbrowser.get("\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" %s").open(row[1])
+                    else:
+                        os.system(f"\"{row[1]}\"")

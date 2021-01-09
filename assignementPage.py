@@ -7,6 +7,7 @@ class AssignmentPage:
         self.layout = QVBoxLayout()
         self.top_layout = QHBoxLayout()
 
+
         self.header = QLabel("Assignments:")
         self.top_layout.addWidget(self.header)
 
@@ -15,6 +16,7 @@ class AssignmentPage:
         self.entry_layout = QVBoxLayout()
 
         self.assignments = get_assignments()
+        self.entry_layout.addLayout(AssignmentRow("Course", "Due Date", "Assignment").content)
         for ass in self.assignments:
             entry = AssignmentRow(ass[0], ass[1], ass[2])
             self.entry_layout.addLayout(entry.content)

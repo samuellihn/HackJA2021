@@ -16,14 +16,16 @@ class FileRow:
             else:
                 os.system(f"\"{text}\"")
 
-    def __init__(self, time, link):
+    def __init__(self,name, time, link):
         self.rowlayout = QHBoxLayout()
         self.timebox = QTimeEdit(QTime.fromString(time))
         self.timebox.setDisplayFormat("HH:mm")
+        self.coursename = QLineEdit(name)
         self.linkbox = QLineEdit(link)
         self.openbutton = QPushButton(text="Go")
         self.openbutton.clicked.connect(self.go_to_link)
         self.linkbox.setMinimumSize(QSize(300, 24))
+        self.rowlayout.addWidget(self.coursename)
         self.rowlayout.addWidget(self.timebox)
         self.rowlayout.addWidget(self.linkbox)
         self.rowlayout.addWidget(self.openbutton)
@@ -37,7 +39,9 @@ class FileRow:
         self.rowlayout.removeWidget(self.linkbox)
         self.rowlayout.removeWidget(self.timebox)
         self.rowlayout.removeWidget(self.openbutton)
+        self.rowlayout.removeWidget(self.coursename)
         self.linkbox.deleteLater()
+        self.coursename.deleteLater()
         self.timebox.deleteLater()
         self.openbutton.deleteLater()
         for i in range(7):
@@ -48,7 +52,7 @@ class FileRow:
         self.hlayout.deleteLater()
 
 class AssignmentRow:
-    def __init__(self, course, date_time, name):
+    def __init__(self, course, date_time, name, bold=False):
         self.hlayout = QHBoxLayout()
         self.content = QVBoxLayout()
         self.course_label = QLabel(course)

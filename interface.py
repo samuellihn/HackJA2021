@@ -12,6 +12,7 @@ from HackJA2021.assignementPage import AssignmentPage
 #Custom stuff
 from custom_qt import *
 from counter import Counter
+app_icon = "automeetlogo.png"
 
 
 def day_to_index(input):
@@ -27,20 +28,23 @@ def day_to_index(input):
     return translate[input]
 
 def load_from_file(filename, rows):
-    with open(filename, "r") as csvfile:
-        file_list = []
-        reader = csv.reader(csvfile)
+    try:
+        with open(filename, "r") as csvfile:
+            file_list = []
+            reader = csv.reader(csvfile)
 
-        for row in reader:
-            try:
-                file_list.append(FileRow(row[0], row[1]))
-                for day in row[2:]:
-                    file_list[-1].dow.checkboxes[day_to_index(day)].setChecked(True)
-            except IndexError:
-                continue
-            entry_layout.addLayout(file_list[int(rows)].hlayout)
-            rows.increment()
-        return file_list
+            for row in reader:
+                try:
+                    file_list.append(FileRow(row[0], row[1], row[2]))
+                    for day in row[2:]:
+                        file_list[-1].dow.checkboxes[day_to_index(day)].setChecked(True)
+                except IndexError:
+                    continue
+                entry_layout.addLayout(file_list[int(rows)].hlayout)
+                rows.increment()
+            return file_list
+    except FileNotFoundError:
+        return []
 
 
 @Slot()
@@ -48,7 +52,7 @@ def edit_number_rows(value):
     if value > int(rows):
         value -= int(rows)
         for x in range(value):
-            file_list.append(FileRow("00:00", "https://"))
+            file_list.append(FileRow("", "00:00", "https://"))
             entry_layout.addLayout(file_list[-1].hlayout)
             rows.increment()
     elif value < int(rows):
@@ -59,13 +63,16 @@ def edit_number_rows(value):
 
 @Slot()
 def save_form():
-    os.remove("classes.csv")
+    try:
+        os.remove("classes.csv")
+    except FileNotFoundError:
+        pass
     with open("classes.csv", "w+") as csvfile:
         writer = csv.writer(csvfile)
 
         to_remove = []
         for x in file_list:
-
+            write_name = x.coursename.text()
             write_time = x.timebox.time().toString("HH:mm")
             write_text = x.linkbox.text()
             if not write_text == "https://":
@@ -74,7 +81,7 @@ def save_form():
                     if day.isChecked():
                         days.append(day.text())
                 # write to the file
-                writer.writerow([write_time, write_text] + days)
+                writer.writerow([write_name, write_time, write_text] + days)
             else:
                 # remove the entry from the layout to match the file
                 x.clear()
@@ -138,7 +145,7 @@ submitButton.clicked.connect(save_form)
 layout.addWidget(submitButton)
 
 timer = QTimer()
-timer.setInterval(5 * 1000)
+timer.setInterval(60 * 1000)
 timer.setTimerType(Qt.CoarseTimer)
 timer.timeout.connect(open_class_wrapper)
 
@@ -146,7 +153,7 @@ runButton = QPushButton(text="Run")
 runButton.clicked.connect(run_app)
 layout.addWidget(runButton)
 
-trayIcon = QSystemTrayIcon(QIcon("umbrella-icon.png"))
+trayIcon = QSystemTrayIcon(QIcon(app_icon))
 trayIcon.activated.connect(foreground)
 
 
@@ -165,6 +172,9 @@ window = QTabWidget()
 window.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 window.addTab(editPage, 'Edit Schedule')
 window.addTab(assignmentPage, 'View Assignments')
+window.setWindowTitle("AutoMeet")
+window.setWindowIcon(QIcon(app_icon))
+window.setMinimumSize(600, 1000)
 window.show()
 
 app.exec_()

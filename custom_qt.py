@@ -1,5 +1,5 @@
 from PySide2.QtCore import QTime, QSize, Slot
-from PySide2.QtWidgets import QTimeEdit, QLineEdit, QHBoxLayout, QCheckBox, QPushButton, QVBoxLayout, QLayout
+from PySide2.QtWidgets import *
 from PySide2.QtWidgets import QSizePolicy
 import webbrowser
 import os
@@ -47,6 +47,17 @@ class FileRow:
         self.dow.hlayout.deleteLater()
         self.hlayout.deleteLater()
 
+class AssignmentRow:
+    def __init__(self, course, date_time, name):
+        self.hlayout = QHBoxLayout()
+        self.content = QVBoxLayout()
+        self.course_label = QLabel(course)
+        self.date_label = QLabel(date_time)
+        self.name_label = QLabel(name)
+        self.hlayout.addWidget(self.course_label)
+        self.hlayout.addWidget(self.date_label)
+        self.hlayout.addWidget(self.name_label)
+        self.content.addLayout(self.hlayout)
 
 class DaysOfWeekSelector:
     def __init__(self):

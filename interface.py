@@ -7,6 +7,7 @@ import csv
 import os
 import manual
 import asyncio
+from HackJA2021.assignementPage import AssignmentPage
 
 #Custom stuff
 from custom_qt import *
@@ -154,10 +155,16 @@ minButton.clicked.connect(minimize)
 layout.addWidget(minButton)
 editPage = QWidget()
 editPage.setLayout(layout)
+
+assignmentPage = QWidget()
+apage = AssignmentPage()
+assignmentPage.setLayout(apage.layout)
+
 editPage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 window = QTabWidget()
 window.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 window.addTab(editPage, 'Edit Schedule')
+window.addTab(assignmentPage, 'View Assignments')
 window.show()
 
 app.exec_()

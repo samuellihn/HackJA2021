@@ -35,16 +35,17 @@ def edit_number_rows(value):
             entry_layout.addLayout(file_list[-1].hlayout)
             rows.increment()
     elif value < int(rows):
-        file_list[-1].hlayout.removeWidget(file_list[-1].linkbox)
-        file_list[-1].hlayout.removeWidget(file_list[-1].timebox)
-        file_list[-1].hlayout.removeWidget(file_list[-1].openbutton)
-        file_list[-1].linkbox.deleteLater()
-        file_list[-1].timebox.deleteLater()
-        file_list[-1].openbutton.deleteLater()
-        entry_layout.removeItem(file_list[-1].hlayout)
-        file_list[-1].hlayout.deleteLater()
-        file_list.pop()
-        rows.decrement()
+        for x in range(int(rows)-value):
+            file_list[-1].hlayout.removeWidget(file_list[-1].linkbox)
+            file_list[-1].hlayout.removeWidget(file_list[-1].timebox)
+            file_list[-1].hlayout.removeWidget(file_list[-1].openbutton)
+            file_list[-1].linkbox.deleteLater()
+            file_list[-1].timebox.deleteLater()
+            file_list[-1].openbutton.deleteLater()
+            entry_layout.removeItem(file_list[-1].hlayout)
+            file_list[-1].hlayout.deleteLater()
+            file_list.pop()
+            rows.decrement()
 
 @Slot()
 def save_form():
@@ -118,7 +119,6 @@ layout.addLayout(top_layout)
 layout.addLayout(entry_layout)
 layout.addStretch(0)
 DOWSelector = DaysOfWeekSelector()
-
 
 rows = Counter()
 numberClasses.valueChanged[int].connect(edit_number_rows)

@@ -60,28 +60,30 @@ def main():
     results = service.courses().list(pageSize=10).execute()
     courses = results.get('courses', [])
     classes = []
+
     for course in courses:
         cid = course['id']
         print((cid))  
         cname = course['name']
-        metadata =  course_work_results = service.courses().courseWork().list(courseId = str(5448623005)).execute()
+        metadata = service.courses().courseWork().list(courseId = cid).execute()
     
 
-        #print(metadata.get("courseWork"))
+        print(metadata.get("courseWork"))
         assignments = []
         for work in (metadata.get("courseWork")):
-
+            print(work)
             aname = work.get("title")
+            try:
+                year = work.get("dueDate").get("year")
+                month = work.get("dueDate").get("month")
+                day = work.get("dueDate").get("day")
 
-            year = work.get("dueDate").get("year")
-            month = work.get("dueDate").get("month")
-            day = work.get("dueDate").get("day")
+                hour = (work.get("dueTime").get("hours"))
+                minute = work.get("dueTime").get("minutes")
 
-            hour = (work.get("dueTime").get("hours"))
-            minute = work.get("dueTime").get("minutes")
-
-            duedate = time( year, month, day, hour, minute)
-            assignments.append(assignment(duedate, cname, cid, aname))
+                duedate = time( year, month, day, hour, minute)
+                assignments.append(assignment(duedate, cname, cid, aname))
+            except: pass
 
         classes.append(assignments)
                     

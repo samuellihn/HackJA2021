@@ -67,7 +67,7 @@ def main():
         metadata =  course_work_results = service.courses().courseWork().list(courseId = str(5448623005)).execute()
     
 
-        #print(metadata.get("courseWork"))
+        # print(metadata.get("courseWork"))
         assignments = []
         for work in (metadata.get("courseWork")):
 
@@ -84,9 +84,9 @@ def main():
             assignments.append(assignment(duedate, cname, cid, aname))
 
         classes.append(assignments)
-                    
-        #print(classes.__dict__)
-    
+
+        print(classes[0][0].__dict__["t"])
+
 
 
 

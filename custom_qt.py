@@ -1,5 +1,5 @@
 from PySide2.QtCore import QTime, QSize, Slot
-from PySide2.QtWidgets import QTimeEdit, QLineEdit, QHBoxLayout, QCheckBox, QPushButton, QVBoxLayout
+from PySide2.QtWidgets import QTimeEdit, QLineEdit, QHBoxLayout, QCheckBox, QPushButton, QVBoxLayout, QLayout
 from PySide2.QtWidgets import QSizePolicy
 import webbrowser
 import os
@@ -31,6 +31,7 @@ class FileRow:
         self.hlayout.addLayout(self.rowlayout)
         self.dow = DaysOfWeekSelector()
         self.hlayout.addLayout(self.dow.hlayout)
+        self.hlayout.setSizeConstraint(QLayout.SetFixedSize)
 
     def clear(self):
         self.rowlayout.removeWidget(self.linkbox)

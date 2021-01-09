@@ -110,9 +110,10 @@ def foreground():
 app = QApplication(sys.argv)
 stylesheet = open("Darkeum.qss")
 app.setStyleSheet(stylesheet.read())
-window = QWidget()
 layout = QVBoxLayout()
+layout.setSizeConstraint(QLayout.SetMinimumSize)
 entry_layout = QVBoxLayout()
+entry_layout.setSizeConstraint(QLayout.SetFixedSize)
 top_layout = QHBoxLayout()
 
 numberClasses = QSpinBox()
@@ -147,10 +148,16 @@ layout.addWidget(runButton)
 trayIcon = QSystemTrayIcon(QIcon("umbrella-icon.png"))
 trayIcon.activated.connect(foreground)
 
+
 minButton = QPushButton(text="Minimize")
 minButton.clicked.connect(minimize)
 layout.addWidget(minButton)
-
-window.setLayout(layout)
+editPage = QWidget()
+editPage.setLayout(layout)
+editPage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+window = QTabWidget()
+window.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+window.addTab(editPage, 'Edit Schedule')
 window.show()
+
 app.exec_()

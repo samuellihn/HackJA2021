@@ -36,7 +36,7 @@ def load_from_file(filename, rows):
             for row in reader:
                 try:
                     file_list.append(FileRow(row[0], row[1], row[2]))
-                    for day in row[2:]:
+                    for day in row[3:]:
                         file_list[-1].dow.checkboxes[day_to_index(day)].setChecked(True)
                 except IndexError:
                     continue

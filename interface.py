@@ -1,9 +1,12 @@
 import sys
 from PySide2.QtWidgets import *
-from PySide2.QtCore import QTime, Slot, Qt
+from PySide2.QtCore import QTime, Slot, Qt, QTimer
+from PySide2.QtGui import QIcon
 import time
 import csv
 import os
+import manual
+import asyncio
 
 #Custom stuff
 from custom_qt import *
@@ -32,14 +35,17 @@ def edit_number_rows(value):
             entry_layout.addLayout(file_list[-1].hlayout)
             rows.increment()
     elif value < int(rows):
-        file_list[-1].hlayout.removeWidget(file_list[-1].linkbox)
-        file_list[-1].hlayout.removeWidget(file_list[-1].timebox)
-        file_list[-1].linkbox.deleteLater()
-        file_list[-1].timebox.deleteLater()
-        entry_layout.removeItem(file_list[-1].hlayout)
-        file_list[-1].hlayout.deleteLater()
-        file_list.pop()
-        rows.decrement()
+        for x in range(int(rows)-value):
+            file_list[-1].hlayout.removeWidget(file_list[-1].linkbox)
+            file_list[-1].hlayout.removeWidget(file_list[-1].timebox)
+            file_list[-1].hlayout.removeWidget(file_list[-1].openbutton)
+            file_list[-1].linkbox.deleteLater()
+            file_list[-1].timebox.deleteLater()
+            file_list[-1].openbutton.deleteLater()
+            entry_layout.removeItem(file_list[-1].hlayout)
+            file_list[-1].hlayout.deleteLater()
+            file_list.pop()
+            rows.decrement()
 
 @Slot()
 def save_form():
@@ -66,7 +72,6 @@ def save_form():
                 x.hlayout.removeWidget(x.linkbox)
                 x.linkbox.deleteLater()
                 x.timebox.deleteLater()
-                entry_layout.removeItem(x.hlayout)
                 x.hlayout.deleteLater()
                 rows.decrement()
                 to_remove.append(x)
@@ -74,6 +79,28 @@ def save_form():
             file_list.remove(i)
 
     numberClasses.setValue(rows)
+@Slot()
+def open_class_wrapper():
+    manual.open_class()
+
+@Slot()
+def run_app():
+    if runButton.text() != "Running...":
+        timer.start()
+        runButton.setText("Running...")
+    else:
+        timer.stop()
+        runButton.setText("Run")
+
+@Slot()
+def minimize():
+    window.hide()
+    trayIcon.show()
+
+def foreground():
+    window.show()
+    trayIcon.hide()
+
 
 #Initialize window and layout
 app = QApplication(sys.argv)
@@ -82,16 +109,16 @@ app.setStyleSheet(stylesheet.read())
 window = QWidget()
 layout = QVBoxLayout()
 entry_layout = QVBoxLayout()
+top_layout = QHBoxLayout()
 
 numberClasses = QSpinBox()
-# numberClasses.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Maximum)
-
-layout.addWidget(numberClasses)
+top_layout.addWidget(QLabel(text="Number of Classes"))
+top_layout.addWidget(numberClasses)
+layout.addLayout(top_layout)
 
 layout.addLayout(entry_layout)
 layout.addStretch(0)
 DOWSelector = DaysOfWeekSelector()
-
 
 rows = Counter()
 numberClasses.valueChanged[int].connect(edit_number_rows)
@@ -109,8 +136,6 @@ with open("classes.csv", "r") as csvfile:
         entry_layout.addLayout(file_list[int(rows)].hlayout)
         rows.increment()
 
-
-
 numberClasses.setValue(rows)
 
 layout.addLayout(DOWSelector.hlayout)
@@ -118,6 +143,23 @@ layout.addLayout(DOWSelector.hlayout)
 submitButton = QPushButton(text="Save")
 submitButton.clicked.connect(save_form)
 layout.addWidget(submitButton)
+
+timer = QTimer()
+timer.setInterval(5 * 1000)
+timer.setTimerType(Qt.CoarseTimer)
+timer.timeout.connect(open_class_wrapper)
+
+runButton = QPushButton(text="Run")
+runButton.clicked.connect(run_app)
+layout.addWidget(runButton)
+
+trayIcon = QSystemTrayIcon(QIcon("umbrella-icon.png"))
+trayIcon.activated.connect(foreground)
+
+minButton = QPushButton(text="Minimize")
+minButton.clicked.connect(minimize)
+layout.addWidget(minButton)
+
 window.setLayout(layout)
 window.show()
 app.exec_()

@@ -4,9 +4,28 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-
+from datetime import datetime
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/classroom.coursework.me', 'https://www.googleapis.com/auth/classroom.courses.readonly']
+
+class time:
+    def __init__(self, year, month, day, hour, minute):
+        self.year = year
+        self.month = month
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+
+
+
+
+
+
+
+
+
+
+
 
 def main():
     """Shows basic usage of the Classroom API.
@@ -36,7 +55,25 @@ def main():
     # Call the Classroom API
     results = service.courses().list(pageSize=10).execute()
     courses = results.get('courses', [])
-    metadata = course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
+    metadata =  course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
+    
+
+
+
+
+    year = (metadata.get("courseWork"))[0].get("dueDate").get("year")
+    month = (metadata.get("courseWork"))[0].get("dueDate").get("month")
+    day = (metadata.get("courseWork"))[0].get("dueDate").get("day")
+
+    hour = (metadata.get("courseWork"))[0].get("dueTime").get("hours")
+    minute = (metadata.get("courseWork"))[0].get("dueTime").get("minutes")
+
+    duedate = time( year, month, day, hour, minute)
+
+    print(duedate.__dict__)
+    
+
+
 
     log = open("log.txt", "w")
     if not courses:
@@ -44,11 +81,11 @@ def main():
     else:
         print('Courses:')
         for course in courses:
-            log.write(str(course) + "\n")
-            # log.write(str(course['id'] + "\t" +  course['name'] + "\n"))
-            print(str(course['id'] + "\t" + course['name'] + "\n"))
+            log.write(str(metadata) + "\n")
+            
 
             # metadata =  course_work_results = service.courses().courseWork().list(courseId = course[u'id']).execute()
 
 if __name__ == '__main__':
     main()
+

@@ -36,7 +36,7 @@ def main():
     # Call the Classroom API
     results = service.courses().list(pageSize=10).execute()
     courses = results.get('courses', [])
-    metadata =  course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
+    metadata = course_work_results = service.courses().courseWork().list(courseId = "5448623005").execute()
 
     log = open("log.txt", "w")
     if not courses:
